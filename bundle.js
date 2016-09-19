@@ -7,12 +7,22 @@ const Game = require('./game');
 /* Global variables */
 var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
+var image = new Image();
+image.src = 'assets/animals.png';
 
 // We have 9 pairs of possible cards that are about 212px square
 var cards = [0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8];
 var board = [];
 
 // TODO: Place the cards on the board in random order
+while(cards.length>0){
+  var index = Math.floor(Math.random() * (cards.length -1));
+  board.push({card: cards[index], flip:true});
+  cards.splice(index, 1);
+}
+// console.log(board);
+// for (var i=0; i<board.length;i++)
+//   console.log(board[i])
 
 canvas.onclick = function(event) {
   event.preventDefault();
@@ -56,6 +66,26 @@ function render(elapsedTime, ctx) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // TODO: Render the board
+  for (var y = 0; y<3; y++){
+    for (var x = 0; x<6; x++){
+      var card = board[y * 6 + x]; //y*width+x;
+      if (card.flip){
+        //render animal
+        ctx.drawImage(image,
+            //source
+            card.card % 3 * 212, Math.floor(card.card / 3), 212, 212,
+            // desitination
+          x * 165 + 3, y * 165 + 3, 160, 160
+        )
+      }
+      else{
+        //render back of card assume 212x212px
+        ctx.fillStyle = '#3333ff';
+        ctx.fillRect(x * 165 + 3, y * 165 + 3, 160, 160);
+      }
+    }
+  }
+  // ctx.drawImage('/assets/animals.png', 0, 0);
 }
 
 },{"./game":2}],2:[function(require,module,exports){
